@@ -340,7 +340,28 @@
       },
       "exitCriteria": {
         "ui:hideReadOnly": true
-      }
+      },
+      "ui:order": [
+        "popnSize",
+        "nICU",
+        "ppHosp",
+        "ppICU",
+        "IFR",
+        "nReps",
+        "tEnd",
+        "tIsolMean",
+        "startDate",
+        "seedOp",
+        "pTest",
+        "cIso",
+        "policyOp",
+        "tControlOn",
+        "triggerThreshold",
+        "controlDuration",
+        "RcontrolTrigger",
+        "exitCriteria",
+        "tTriggerStart"
+      ]
     }
   }
 }
