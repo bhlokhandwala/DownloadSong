@@ -10,11 +10,17 @@ import React,  { useState, useEffect } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
   Button,
 } from 'react-native';
 
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useSongExist, useDownloadSongFile, useplaySong } from "./utils/helper.ts";
+
+import Form from 'react-native-jsonschema-form'
+import jsonSchema from './jsonSchema'
 
 const App: () => React$Node = () => {
   const [progress, setProgress] = useState<number>(0);
@@ -22,17 +28,18 @@ const App: () => React$Node = () => {
   const { downloadSong } = useDownloadSongFile(setProgress, checkSongExist);
   const { playSong } = useplaySong();
 
-  useEffect(() => {
-    checkSongExist();
-  },[fileExist]);
+  // useEffect(() => {
+  //   checkSongExist();
+  // },[fileExist]);
 
   return (
     <>
+    <ScrollView>
       <View>
         <Text>Song Application</Text>
       </View>
       <View>
-      <AnimatedCircularProgress
+      {/* <AnimatedCircularProgress
         size={200}
         width={3}
         fill={progress}
@@ -51,10 +58,36 @@ const App: () => React$Node = () => {
               </>
           )
         }
-      </AnimatedCircularProgress>
+      </AnimatedCircularProgress> */}
       </View>
+      <View style={styles.container}>
+        <View style={styles.notch}></View>
+          <Form
+            schema={jsonSchema.form.schema}
+            uiSchema={{...jsonSchema.form.uiSchema}}
+            onSubmit={(submited)=>{
+              Alert.alert(
+              "u just submitted",
+                JSON.stringify(submited.formData)          )
+            }}
+            submitTitle={"Submit"}
+          />
+
+      </View>
+    </ScrollView>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+    padding:20
+  },
+  notch:{
+    width:"100%" 
+    }
+});
 
 export default App;

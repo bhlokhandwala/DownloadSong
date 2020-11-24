@@ -1,0 +1,346 @@
+{
+  "displayName": "COVID-19 Spread and Effects Stochastic",
+  "creator": "Te Pūnaha Matatini researchers",
+  "tags": [
+    "public",
+    "featured",
+    "covid-19",
+    "populations",
+    "predictive",
+    "interactive"
+  ],
+  "form": {
+    "type": "form",
+    "dslVersion": "1.0.0",
+    "schema": {
+      "type": "object",
+      "description": "This user interface allows you to simulate the impact of applying control measures, by varying the effective reproduction rate, either for a fixed period of time (Fixed-term control) or/and dynamically in response to reported case numbers.  Users can choose to apply both fixed and dynamic control measures – if they overlap in time, the dynamic control will be selected as a rule. The configurable parameters below have been pre-populated with default values for your reference.",
+      "required": [
+        "popnSize",
+        "nICU",
+        "ppHosp",
+        "ppICU",
+        "IFR",
+        "nReps",
+        "tEnd",
+        "tIsolMean",
+        "startDate",
+        "tControlOn",
+        "controlDuration",
+        "RcontrolFix",
+        "tTriggerStart",
+        "triggerThreshold",
+        "RcontrolTrigger",
+        "exitCriteria",
+        "policyOp",
+        "seedOp",
+        "pTest",
+        "cIso"
+      ],
+      "properties": {
+        "popnSize": {
+          "type": "number",
+          "title": "Population Size",
+          "description": "The population size",
+          "default": 500000,
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "nICU": {
+          "type": "number",
+          "title": "ICU Bed Capacity",
+          "description": "The number of beds available in ICU.",
+          "default": 500,
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "ppHosp": {
+          "type": "number",
+          "title": "Hospitalisation Rate",
+          "description": "The rate of COVID-19 cases that require hospitalisation.",
+          "default": 0.0525,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ppICU": {
+          "type": "number",
+          "title": "ICU admission Rate",
+          "description": "The rate of clinical COVID-19 cases that require ICU. Clinical cases refers to COVID-19 cases that have been identified.",
+          "default": 0.0165,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "IFR": {
+          "type": "number",
+          "title": "Infection Fatality Rate",
+          "description": "Infection fatality rate for clinical COVID-19 cases.",
+          "default": 0.0088,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "nReps": {
+          "type": "number",
+          "title": "Number of simulation runs",
+          "description": "Number of stochastic realisations. The stochastic realisations will be averaged to produce the required plots.",
+          "default": 50,
+          "minimum": 0,
+          "maximum": 150
+        },
+        "tEnd": {
+          "type": "number",
+          "title": "Simulation Duration (days)",
+          "description": "Duration of the simulation in days. This duration will start on 1 Feb 2020 and go for x number of days.",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 35
+        },
+        "tIsolMean": {
+          "type": "number",
+          "title": "Mean time from onset to isolation (days).",
+          "default": 2.18,
+          "minimum": 0,
+          "maximum": 100
+        },
+        "startDate": {
+          "type": "string",
+          "title": "Simulation Start Date",
+          "description": "The date the simulation should start from. The default start date is 01 Feb 2020 to reflect New Zealand’s COVID-19 spread period.",
+          "default": "01Feb2020"
+        },
+        "pTest": {
+          "type": "number",
+          "title": "Proportion of clinical cases that get tested and reported",
+          "description": "The proportion of clinical cases who get tested & reported. The default is 1 assuming all clinical cases are eventually tested and detected.",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cIso": {
+          "type": "number",
+          "title": "Infectiousness of asymptomatic cases relative to non-isolated clinical cases",
+          "description": "Relative infectiousness post isolation i.e Isolated are 35% less infectious than non-isolated clinical cases",
+          "default": 0.65,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "seedOp": {
+          "type": "string",
+          "title": "Number of seed cases (initial outbreak size)",
+          "oneOf": [
+            {
+              "title": "10",
+              "const": "test"
+            }
+          ],
+          "default": "test"
+        },
+        "policyOp": {
+          "type": "string",
+          "title": "Control Policy Type",
+          "description": "Which policy type should be used. The current default policy includes 10 domestic seed cases.",
+          "oneOf": [
+            {
+              "title": "Fixed-term control",
+              "const": "fix-term control"
+            },
+            {
+              "title": "Dynamic control",
+              "const": "reported cases trigger"
+            },
+            {
+              "title": "Both fixed-term and dynamic control",
+              "const": "fix-term control and reported cases trigger"
+            }
+          ]
+        }
+      },
+      "dependencies": {
+        "policyOp": {
+          "oneOf": [
+            {
+              "properties": {
+                "policyOp": {
+                  "enum": [
+                    "fix-term control"
+                  ]
+                },
+                "tControlOn": {
+                  "$ref": "#/definitions/tControlOn"
+                },
+                "controlDuration": {
+                  "$ref": "#/definitions/controlDuration"
+                },
+                "RcontrolFix": {
+                  "$ref": "#/definitions/RcontrolFix"
+                },
+                "tTriggerStart": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/tTriggerStart"
+                },
+                "triggerThreshold": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/triggerThreshold"
+                },
+                "RcontrolTrigger": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/RcontrolTrigger"
+                },
+                "exitCriteria": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/exitCriteria"
+                }
+              }
+            },
+            {
+              "properties": {
+                "policyOp": {
+                  "enum": [
+                    "reported cases trigger"
+                  ]
+                },
+                "tControlOn": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/tControlOn"
+                },
+                "controlDuration": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/controlDuration"
+                },
+                "RcontrolFix": {
+                  "readOnly": true,
+                  "$ref": "#/definitions/RcontrolFix"
+                },
+                "tTriggerStart": {
+                  "$ref": "#/definitions/tTriggerStart"
+                },
+                "triggerThreshold": {
+                  "$ref": "#/definitions/triggerThreshold"
+                },
+                "RcontrolTrigger": {
+                  "$ref": "#/definitions/RcontrolTrigger"
+                },
+                "exitCriteria": {
+                  "$ref": "#/definitions/exitCriteria"
+                }
+              }
+            },
+            {
+              "properties": {
+                "policyOp": {
+                  "enum": [
+                    "fix-term control and reported cases trigger"
+                  ]
+                },
+                "tControlOn": {
+                  "$ref": "#/definitions/tControlOn"
+                },
+                "controlDuration": {
+                  "$ref": "#/definitions/controlDuration"
+                },
+                "RcontrolFix": {
+                  "$ref": "#/definitions/RcontrolFix"
+                },
+                "tTriggerStart": {
+                  "$ref": "#/definitions/tTriggerStart"
+                },
+                "triggerThreshold": {
+                  "$ref": "#/definitions/triggerThreshold"
+                },
+                "RcontrolTrigger": {
+                  "$ref": "#/definitions/RcontrolTrigger"
+                },
+                "exitCriteria": {
+                  "$ref": "#/definitions/exitCriteria"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "definitions": {
+        "tControlOn": {
+          "type": "number",
+          "title": "Control Measures Start",
+          "description": "The start day for the control measures to be enforced",
+          "default": 15,
+          "minimum": 0,
+          "maximum": 35
+        },
+        "controlDuration": {
+          "type": "number",
+          "title": "Duration of control measures",
+          "description": "The duration of the control measures. The duration specifies how long the control reff should be implemented for.",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 35
+        },
+        "RcontrolFix": {
+          "type": "number",
+          "title": "The reproduction number under fixed term control restrictions",
+          "description": "The reproduction number under fixed term control restrictions",
+          "default": 0.8,
+          "minimum": 0,
+          "maximum": 25
+        },
+        "tTriggerStart": {
+          "type": "number",
+          "title": "Trigger Start",
+          "description": "The start day for where the control trigger logic applies. Prior to this start date, if the case number exceeds 500 the trigger threshold will not update the Reff.",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 35
+        },
+        "triggerThreshold": {
+          "type": "number",
+          "title": "Case Trigger Threshold",
+          "description": "When reported cases exceed this threshold, the RcontrolTrigger will change to x (user defined)",
+          "default": 100,
+          "minimum": 0,
+          "maximum": 5000000
+        },
+        "RcontrolTrigger": {
+          "type": "number",
+          "title": "The reproduction number enforced once the trigger threshold is exceeded",
+          "description": "The reproduction number that is triggered once reported cases exceed the trigger threshold number (e.g. 300)",
+          "default": 2,
+          "minimum": 0,
+          "maximum": 25
+        },
+        "exitCriteria": {
+          "type": "number",
+          "title": "Exit criteria to reduce control measures",
+          "description": "The exit criteria defines the threshold which cases numbers need to remain below for 5 consecutive days in order to release control measures. (e.g. the default of 10 means <10 reported cases for 5 consecutive days will release control measures)",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 5000000
+        }
+      }
+    },
+    "uiSchema": {
+      "policyOp": {
+        "ui:seperator": true
+      },
+      "tControlOn": {
+        "ui:hideReadOnly": true
+      },
+      "controlDuration": {
+        "ui:hideReadOnly": true
+      },
+      "RcontrolFix": {
+        "ui:hideReadOnly": true
+      },
+      "tTriggerStart": {
+        "ui:hideReadOnly": true
+      },
+      "triggerThreshold": {
+        "ui:hideReadOnly": true
+      },
+      "RcontrolTrigger": {
+        "ui:hideReadOnly": true
+      },
+      "exitCriteria": {
+        "ui:hideReadOnly": true
+      }
+    }
+  }
+}
