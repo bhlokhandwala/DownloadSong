@@ -19,14 +19,62 @@ import {
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useSongExist, useDownloadSongFile, useplaySong } from "./utils/helper.ts";
 
-import Form from 'react-native-jsonschema-form'
-import jsonSchema from './jsonSchema'
+// import Form from 'react-native-jsonschema-form'
+// import jsonSchema from './jsonSchema'
+
+import { useHistory } from 'react-router';
+import { UIProvider } from 'react-native-web-ui-components';
+import Form from 'react-native-web-jsonschema-form';
+import { Router, Switch } from 'react-router-dom';
+
+const theme = {
+  input: {
+    focused: StyleSheet.create({
+      border: {
+        borderColor: 'yellow',
+      },
+    }),
+  },
+};
+
+const schema = {
+  type: 'object',
+  properties: {
+    username: { type: 'string' },
+    password: { type: 'string' },
+  },
+};
+
+const BasicForm = ({ formData, onChange }) => (
+  <Form
+    formData={formData}
+    schema={schema}
+    onChange={onChange}
+  />
+);
+
+const ThemeWrapper = ({ children }) => {
+  const history = useHistory();
+
+  return (
+    <UIProvider theme={theme} history={history}>
+      {children}
+    </UIProvider>
+  );
+};
 
 const App: () => React$Node = () => {
   const [progress, setProgress] = useState<number>(0);
   const { fileExist, checkSongExist} = useSongExist();
   const { downloadSong } = useDownloadSongFile(setProgress, checkSongExist);
   const { playSong } = useplaySong();
+
+  const [formData, setFormData] = useState({});
+  
+  const onChange = (event) => setFormData({
+    ...formData,
+    [event.params.name]: event.params.value,
+  });
 
   // useEffect(() => {
   //   checkSongExist();
@@ -62,7 +110,7 @@ const App: () => React$Node = () => {
       </View>
       <View style={styles.container}>
         <View style={styles.notch}></View>
-          <Form
+          {/* <Form
             schema={jsonSchema.form.schema}
             uiSchema={{...jsonSchema.form.uiSchema}}
             onSubmit={(submited)=>{
@@ -71,8 +119,18 @@ const App: () => React$Node = () => {
                 JSON.stringify(submited.formData)          )
             }}
             submitTitle={"Submit"}
-          />
+          /> */}
 
+        <Router>
+          <Switch>
+            <ThemeWrapper>
+              <BasicForm
+                formData={formData}
+                onChange={onChange}
+              />
+            </ThemeWrapper>
+          </Switch>
+        </Router>
       </View>
     </ScrollView>
     </>
