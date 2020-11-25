@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React,  { useState, useEffect } from 'react';
+import React,  { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,8 @@ import { useSongExist, useDownloadSongFile, useplaySong } from "./utils/helper.t
 import Form from 'react-native-jsonschema-form'
 import jsonSchema from './jsonSchema'
 
+import ReactNativeForm,  {defaultProps, FormContext}  from 'rjsf-native';
+
 const App: () => React$Node = () => {
   const [progress, setProgress] = useState<number>(0);
   const { fileExist, checkSongExist} = useSongExist();
@@ -32,11 +34,13 @@ const App: () => React$Node = () => {
   //   checkSongExist();
   // },[fileExist]);
 
+  const form = useRef(null);
+
   return (
     <>
     <ScrollView>
       <View>
-        <Text>Song Application</Text>
+        <Text> Application</Text>
       </View>
       <View>
       {/* <AnimatedCircularProgress
@@ -62,7 +66,7 @@ const App: () => React$Node = () => {
       </View>
       <View style={styles.container}>
         <View style={styles.notch}></View>
-          <Form
+          {/* <Form
             schema={jsonSchema.form.schema}
             uiSchema={{...jsonSchema.form.uiSchema}}
             onSubmit={(submited)=>{
@@ -71,7 +75,29 @@ const App: () => React$Node = () => {
                 JSON.stringify(submited.formData)          )
             }}
             submitTitle={"Submit"}
-          />
+          /> */}
+          <FormContext.Provider
+            value={ {
+              ...defaultProps,
+            } }
+          >
+          <ReactNativeForm
+            ref={form}
+            onError={e => {
+              console.log(e);
+              Alert.alert('Please check your form');
+            }}
+            schema={jsonSchema.form.schema}
+            uiSchema={jsonSchema.form.uiSchema}
+            onSubmit={form => console.log(form.formData)}>
+            <Button
+              title="Submit"
+              onPress={() => {
+                form.$current?.submit();
+              }}
+            />
+          </ReactNativeForm>
+          </FormContext.Provider>
 
       </View>
     </ScrollView>
