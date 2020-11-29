@@ -151,7 +151,8 @@
               "title": "Both fixed-term and dynamic control",
               "const": "fix-term control and reported cases trigger"
             }
-          ]
+          ],
+          "default": "fix-term control and reported cases trigger"
         }
       },
       "dependencies": {
@@ -360,8 +361,10 @@
         "controlDuration",
         "RcontrolTrigger",
         "exitCriteria",
-        "tTriggerStart"
+        "tTriggerStart",
+        "RcontrolFix"
       ]
-    }
+    },
+    "formData": {"popnSize":500000,"nICU":500,"ppHosp":0.0525,"ppICU":0.0165,"IFR":0.0088,"nReps":50,"tEnd":30,"tIsolMean":2.18,"startDate":"01Feb2020","pTest":1,"cIso":0.65,"seedOp":"test","policyOp":"fix-term control and reported cases trigger","tControlOn":15,"triggerThreshold":100,"controlDuration":10,"RcontrolTrigger":0,"exitCriteria":10,"tTriggerStart":30,"RcontrolFix":0}
   }
 }

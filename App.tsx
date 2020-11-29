@@ -65,10 +65,13 @@ const App: () => React$Node = () => {
           <Form
             schema={jsonSchema.form.schema}
             uiSchema={{...jsonSchema.form.uiSchema}}
+            formData={jsonSchema.form.formData}
             onSubmit={(submited)=>{
               Alert.alert(
               "u just submitted",
-                JSON.stringify(submited.formData)          )
+                JSON.stringify(submited.formData)          );
+                console.log( JSON.stringify(submited.formData) );
+                
             }}
             submitTitle={"Submit"}
           />
