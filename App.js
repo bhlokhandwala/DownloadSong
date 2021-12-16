@@ -57,13 +57,13 @@ const App: () => React$Node = () => {
         return;
       }
       // loaded successfully
-      console.log('duration in seconds: ' + song.getDuration() + 'number of channels: ' + song.getNumberOfChannels());
+      console.log('duration in sec: ' + song.getDuration() + 'number of channels: ' + song.getNumberOfChannels());
       // Play the sound with an onEnd callback
       song.play((success) => {
         if (success) {
-          console.log('successfully finished playing');
+          console.log('successfully finished playing.');
         } else {
-          console.log('playback failed due to audio decoding errors');
+          console.log('playback failed due to audio decoding errors.');
         }
       });
     });
